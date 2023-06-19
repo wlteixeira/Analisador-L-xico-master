@@ -22,7 +22,7 @@ reserved = {
     'int': 'INT',
     'real': 'REAL',
     'bool': 'BOOLEANO',
-    'texto': 'TEXTO',
+    'texto': 'CADEIA_CAR',
 }
 
 # Define os nomes dos tokens
@@ -86,9 +86,6 @@ t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
 
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
-
-parser = yacc.yacc()
-
 
 def t_VAR(t):
     r'([a-zA-Z_]+)\d*\w*'
