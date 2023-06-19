@@ -75,7 +75,7 @@ def p_para(p):
     '''
 
     'SE' 'SENAO'
-def p_condicional(p);
+def p_condicional(p):
     '''condicional : SE ABRE_PAR VAR OP_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
                    | SE ABRE_PAR VAR OP_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
                    | SE ABRE_PAR VAR OP_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
