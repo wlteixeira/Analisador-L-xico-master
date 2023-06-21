@@ -1,7 +1,11 @@
 import ply.lex as lex
-from ply import yacc
+import ply.yacc as yacc
+from cProfile import label
+from tkinter import *
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk
+from tkinter import filedialog
+from tkinter import filedialog as fd
 
 errors = []
 reserved_funk = ['fatorial']
@@ -49,6 +53,7 @@ tokens = [
     'FECHA_PAR',
     'OPER_RELA',
     'OPER_MAT',
+    'OPER_ATRIB_IGUAL',
     'ITERADORES',
     'NEGACAO',
     'OPER_LOG',
@@ -75,6 +80,7 @@ t_ABRE_PAR = r'\('
 t_FECHA_PAR = r'\)'
 t_OPER_RELA = r'(=|==|!=|<=|>=|<|>)'
 t_OPER_MAT = r'(\+|\-|\*|\/|\%)'
+t_OPER_ATRIB_IGUAL = r'='
 t_ITERADORES = r'(ate|passo)'
 t_NEGACAO = r'!'
 t_OPER_LOG = r'(&&|\|\|)'
@@ -84,8 +90,128 @@ t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)
 t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
 
 
+def p_ifsuldeminas(t):
+    '''codigo : IFSULDEMINAS'''
+
+def p_compiladores(t):
+    '''codigo : COMPILADORES'''
+
+def p_inicio(t):
+    '''codigo : INICIO'''
+
+def p_fim(t):
+    '''codigo : FIM'''
+
+def p_codigo_mais(t):
+    '''codigos : codigos codigo'''
+
+def p_codigo_simples(t):
+    '''codigos : codigo'''
+
+def p_variavel(t):
+    '''codigo : TIPO VAR 
+                | TIPO VAR OPER_ATRIB_IGUAL INTEIRO
+                | TIPO VAR OPER_ATRIB_IGUAL REAL
+                | TIPO VAR OPER_ATRIB_IGUAL CADEIA_CAR
+                | TIPO VAR OPER_ATRIB_IGUAL BOOLEANO 
+                | TIPO VAR OPER_ATRIB_IGUAL VAR
+    '''
+
+def p_tipo(t):
+    '''codigo : INT
+            | REAL
+            | BOOLEANO
+            | CADEIA_CAR
+    '''
+
+def p_para(t):
+    '''codigo : PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+            | PARA ABRE_PAR VAR OPER_RELA VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+            | PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+            | PARA ABRE_PAR VAR OPER_RELA VAR PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+
+            | PARA ABRE_PAR VAR OPER_ATRIB_IGUAL INTEIRO PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+            | PARA ABRE_PAR VAR OPER_RELA INTEIRO PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+    '''
+
+
+def p_condicional(t):
+    '''codigo : SE ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+
+                   | SE ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+                   | SE ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+        '''
+
+
+def p_enquanto(t):
+    '''codigo : ENQUANTO ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | ENQUANTO ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | ENQUANTO ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | ENQUANTO ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | ENQUANTO ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+    '''
+
+def p_retorno(t):
+    '''codigo : RETORNO ABRE_PAR VAR FECHA_PAR
+              | RETORNO INTEIRO
+    '''
+
+def p_definir_funk(t):
+    '''codigo : FUNK NOME_FUNK ABRE_PAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | FUNK NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | FUNK NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | FUNK NOME_FUNK ABRE_PAR VAR VAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+              | FUNK NOME_FUNK ABRE_PAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+    '''
+
+def p_chamar_funk(t):
+    '''codigo : NOME_FUNK ABRE_PAR VAR FECHA_PAR
+              | NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR
+              | NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR
+              | NOME_FUNK ABRE_PAR VAR VAR VAR VAR FECHA_PAR
+              | NOME_FUNK ABRE_PAR FECHA_PAR
+    '''
+
+def p_escreva(t):
+  '''codigo : ESCREVA ABRE_PAR CADEIA_CAR FECHA_PAR
+            | ESCREVA ABRE_PAR CADEIA_CAR VAR FECHA_PAR
+            | ESCREVA ABRE_PAR VAR FECHA_PAR
+            | ESCREVA ABRE_PAR CADEIA_CAR INTEIRO FECHA_PAR
+            | ESCREVA ABRE_PAR INTEIRO FECHA_PAR
+            | ESCREVA ABRE_PAR CADEIA_CAR REAL FECHA_PAR
+            | ESCREVA ABRE_PAR REAL FECHA_PAR
+
+  '''
+
+def p_leia(t):
+  '''codigo : LEIA ABRE_PAR VAR FECHA_PAR'''
+
+
 # Ignora espaços em branco e tabulações
 t_ignore = ' \t'
+
+errossintaticos = []
+def p_error(p):
+    errossintaticos.append(p)
+    print("ERRO: ",p)
+
+parser = yacc.yacc()
+
+#Chamada do Algoritmo em si começa aqui
+erros = 0
+
+#função padrão para adicionar as classificações dos tokens para ser impressa pelo compilador
+def add_lista_saida(t,notificacao):
+    saidas.append((t.lineno,t.lexpos,t.type,t.value, notificacao))
+
+saidas = []
 
 def t_VAR(t):
     r'([a-zA-Z_]+)\d*\w*'
