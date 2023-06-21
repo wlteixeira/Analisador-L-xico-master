@@ -120,31 +120,35 @@ def p_chamar_funk(p):
             | NOME_FUNK ABRE_PAR FECHA_PAR
     '''
 
-#    'ESCREVA',
-#    escreva(“Parabéns você acertou o nome”);
-#    escreva(resultado);
-#
-#
-#def p_escreva(t):
-#    '''escreva : ESCREVA ABRE_PAR '''
-#def p_statement_write(t):
-#    '''write_statement : WRITE  list_expression '''
-#    tmp=""
-#    for element in t[2]:
-#        tmp+=str(element)+" "
-#    print ("In Exectution: "+tmp)
-#
-#
-#def p_statement_read(t):
-#    '''read_statement : READ variavel '''
-#    t[3].value = raw_input(); 	
-#
-#    'LEIA',
+   'ESCREVA'
+def p_escreva(p):
+  '''escreva : ESCREVA ABRE_PAR CADEIA_CAR FECHA_PAR
+             | ESCREVA ABRE_PAR CADEIA_CAR VAR FECHA_PAR
+             | ESCREVA ABRE_PAR VAR FECHA_PAR
+             | ESCREVA ABRE_PAR CADEIA_CAR INTEIRO FECHA_PAR
+             | ESCREVA ABRE_PAR INTEIRO FECHA_PAR
+             | ESCREVA ABRE_PAR CADEIA_CAR REAL FECHA_PAR
+             | ESCREVA ABRE_PAR REAL FECHA_PAR
+
+  '''
+
+    'LEIA'
+def p_escreva(p):
+  '''leia : LEIA ABRE_PAR VAR FECHA_PAR'''
+
+    'STR_INCOMPLETA'
+def p_str_incompleta(p):
+    '''strincompleta : TIPO VAR OP_ATRIB_IGUAL STR_INCOMPLETA'''
+
+    'VAR_ERRO'
+def p_var_erro(p):
+    '''varerro : TIPO VAR OP_ATRIB_IGUAL VAR_ERRO'''
+
+    'NUM_ERRO'
+def p_num_erro(p):
+    '''numerro : TIPO VAR OP_ATRIB_IGUAL NUM_ERRO'''
 
 
-    'STR_INCOMPLETA',
-    'VAR_ERRO',
-    'NUM_ERRO',
 ]+ list(reserved.values())
 
 # Expressões regulares para cada token
