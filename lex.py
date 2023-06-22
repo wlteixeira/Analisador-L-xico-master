@@ -46,9 +46,9 @@ tokens = [
     'ITERADORES',
     'OPER_LOG',
     'NOME_FUNK',
-    'STR_INCOMPLETA',
-    'VAR_ERRO',
-    'NUM_ERRO'
+    #'STR_INCOMPLETA',
+    #'VAR_ERRO',
+    #'NUM_ERRO'
 ]+ list(reserved.values())
 
 # Expressões regulares para cada token
@@ -68,9 +68,9 @@ t_OPER_ATRIB_IGUAL = r'='
 t_ITERADORES = r'(ate|passo)'
 t_OPER_LOG = r'(&&|\|\|)'
 t_NOME_FUNK = r'[a-zA-Z_]\w*[ ][(].*?[)]'
-t_STR_INCOMPLETA = r'"[^"]*'
-t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)'
-t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
+#t_STR_INCOMPLETA = r'"[^"]*'
+#t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)'
+#t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
 
 def p_programa(p):
     ''' programa : ifsuldeminas compiladores inicio codigos fim'''
