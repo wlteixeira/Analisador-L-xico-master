@@ -3,7 +3,6 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Unused terminals:
 
     ABRE_COLCH
-    BOOLEANOREAL
     FECHA_COLCH
     NEGACAO
     NUM_ERRO
@@ -82,7 +81,6 @@ ABRE_CHAV            : 18 19 20 21 22 23 24 25 26 27 28 29 29 30 30 31 31 32 32 
 ABRE_COLCH           : 
 ABRE_PAR             : 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58
 BOOLEANO             : 12 16 27 32 37
-BOOLEANOREAL         : 
 CADEIA_CAR           : 11 17 26 31 38 51 52 54 56
 COMPILADORES         : 3
 ENQUANTO             : 34 35 36 37 38
