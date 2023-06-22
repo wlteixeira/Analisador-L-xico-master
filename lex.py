@@ -89,26 +89,28 @@ t_STR_INCOMPLETA = r'"[^"]*'
 t_VAR_ERRO = r'([0-9]+[a-z]+)|([@!#$%&*]+[a-z]+|[a-z]+\.[0-9]+|[a-z]+[@!#$%&*]+)'
 t_NUM_ERRO = r'^[-+]?\d+(\.\d+)?([eE][-+]?\d+)?[^0-9]*$'
 
+def p_programa(p):
+    ''' programa : ifsuldeminas compiladores inicio codigos fim'''
 
-def p_ifsuldeminas(t):
-    '''codigo : IFSULDEMINAS'''
+def p_ifsuldeminas(p):
+    '''ifsuldeminas : IFSULDEMINAS'''
 
-def p_compiladores(t):
-    '''codigo : COMPILADORES'''
+def p_compiladores(p):
+    '''compiladores : COMPILADORES'''
 
-def p_inicio(t):
-    '''codigo : INICIO'''
+def p_inicio(p):
+    '''inicio : INICIO'''
 
-def p_fim(t):
-    '''codigo : FIM'''
+def p_fim(p):
+    '''fim : FIM'''
 
-def p_codigo_mais(t):
+def p_codigo_mais(p):
     '''codigos : codigos codigo'''
 
-def p_codigo_simples(t):
+def p_codigo_simples(p):
     '''codigos : codigo'''
 
-def p_variavel(t):
+def p_variavel(p):
     '''codigo : TIPO VAR 
                 | TIPO VAR OPER_ATRIB_IGUAL INTEIRO
                 | TIPO VAR OPER_ATRIB_IGUAL REAL
@@ -117,14 +119,14 @@ def p_variavel(t):
                 | TIPO VAR OPER_ATRIB_IGUAL VAR
     '''
 
-def p_tipo(t):
+def p_tipo(p):
     '''codigo : INT
             | REAL
             | BOOLEANO
             | CADEIA_CAR
     '''
 
-def p_para(t):
+def p_para(p):
     '''codigo : PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
             | PARA ABRE_PAR VAR OPER_RELA VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
             | PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
@@ -135,7 +137,7 @@ def p_para(t):
     '''
 
 
-def p_condicional(t):
+def p_condicional(p):
     '''codigo : SE ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
                    | SE ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
                    | SE ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
@@ -150,7 +152,7 @@ def p_condicional(t):
         '''
 
 
-def p_enquanto(t):
+def p_enquanto(p):
     '''codigo : ENQUANTO ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
               | ENQUANTO ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
               | ENQUANTO ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
@@ -158,12 +160,12 @@ def p_enquanto(t):
               | ENQUANTO ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
     '''
 
-def p_retorno(t):
+def p_retorno(p):
     '''codigo : RETORNO ABRE_PAR VAR FECHA_PAR
               | RETORNO INTEIRO
     '''
 
-def p_definir_funk(t):
+def p_definir_funk(p):
     '''codigo : FUNK NOME_FUNK ABRE_PAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
               | FUNK NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
               | FUNK NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
@@ -171,7 +173,7 @@ def p_definir_funk(t):
               | FUNK NOME_FUNK ABRE_PAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
     '''
 
-def p_chamar_funk(t):
+def p_chamar_funk(p):
     '''codigo : NOME_FUNK ABRE_PAR VAR FECHA_PAR
               | NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR
               | NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR
@@ -179,7 +181,7 @@ def p_chamar_funk(t):
               | NOME_FUNK ABRE_PAR FECHA_PAR
     '''
 
-def p_escreva(t):
+def p_escreva(p):
   '''codigo : ESCREVA ABRE_PAR CADEIA_CAR FECHA_PAR
             | ESCREVA ABRE_PAR CADEIA_CAR VAR FECHA_PAR
             | ESCREVA ABRE_PAR VAR FECHA_PAR
@@ -190,7 +192,7 @@ def p_escreva(t):
 
   '''
 
-def p_leia(t):
+def p_leia(p):
   '''codigo : LEIA ABRE_PAR VAR FECHA_PAR'''
 
 
