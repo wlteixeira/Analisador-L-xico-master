@@ -34,8 +34,6 @@ tokens = [
     'VAR',
     'TIPO',
     'INTEIRO',
-    'ABRE_COLCH',
-    'FECHA_COLCH',
     'ABRE_CHAV',
     'FECHA_CHAV',
     'VIRG',
@@ -46,12 +44,11 @@ tokens = [
     'OPER_MAT',
     'OPER_ATRIB_IGUAL',
     'ITERADORES',
-    'NEGACAO',
     'OPER_LOG',
     'NOME_FUNK',
     'STR_INCOMPLETA',
     'VAR_ERRO',
-    'NUM_ERRO',
+    'NUM_ERRO'
 ]+ list(reserved.values())
 
 # Expressões regulares para cada token
@@ -59,8 +56,6 @@ t_INTEIRO = r'([+-])?\d+'
 t_BOOLEANO = r'(true|false)'
 t_REAL = r'(([+-])?\d+)[.]\d+'
 t_CADEIA_CAR = r'"[^"\n]*"'
-t_ABRE_COLCH = r'\['
-t_FECHA_COLCH = r'\]'
 t_ABRE_CHAV = r'{'
 t_FECHA_CHAV = r'}'
 t_VIRG = r','
@@ -71,7 +66,6 @@ t_OPER_RELA = r'(=|==|!=|<=|>=|<|>)'
 t_OPER_MAT = r'(\+|\-|\*|\/|\%)'
 t_OPER_ATRIB_IGUAL = r'='
 t_ITERADORES = r'(ate|passo)'
-t_NEGACAO = r'!'
 t_OPER_LOG = r'(&&|\|\|)'
 t_NOME_FUNK = r'[a-zA-Z_]\w*[ ][(].*?[)]'
 t_STR_INCOMPLETA = r'"[^"]*'
@@ -98,6 +92,7 @@ def p_codigo_mais(p):
 
 def p_codigo_simples(p):
     '''codigos : codigo'''
+    
 
 def p_variavel(p):
     '''codigo : TIPO VAR 
@@ -107,46 +102,65 @@ def p_variavel(p):
                 | TIPO VAR OPER_ATRIB_IGUAL BOOLEANO 
                 | TIPO VAR OPER_ATRIB_IGUAL VAR
     '''
+def p_variavel_matematica(p):
+    ''' varmat : VAR INTEIRO
+               | VAR REAL
+    '''
+def p_operacao_mat(p):
+    ''' operacao : INTEIRO OPER_MAT INTEIRO
+                 | varmat OPER_MAT varmat
+                 | varmat OPER_MAT INTEIRO
+                 | INTEIRO OPER_MAT varmat
+
+                 | REAL OPER_MAT REAL
+                 | varmat OPER_MAT REAL
+                 | REAL OPER_MAT varmat
+    '''
+
+def p_matematica(p):
+    '''codigo : operacao
+              | operacao operacao'''
 
 def p_tipo(p):
     '''codigo : INT
-            | REAL
-            | BOOLEANO
-            | CADEIA_CAR
+              | REAL
+              | BOOLEANO
+              | CADEIA_CAR
     '''
+
+def p_logico(p):
+    '''logico : VAR OPER_LOG VAR
+              | VAR OPER_LOG CADEIA_CAR
+              | VAR OPER_LOG INTEIRO
+              | VAR OPER_LOG REAL
+    '''
+
+def p_relacional(p):
+    '''relacional :  VAR OPER_RELA VAR
+                    | VAR OPER_RELA INTEIRO
+                    | VAR OPER_RELA REAL
+                    | VAR OPER_RELA CADEIA_CAR
+    '''
+
+def p_expressao_interna(p):
+    '''expinterna : ABRE_CHAV codigos FECHA_CHAV'''
 
 def p_para(p):
-    '''codigo : PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-            | PARA ABRE_PAR VAR OPER_RELA VAR PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-            | PARA ABRE_PAR VAR OPER_ATRIB_IGUAL VAR PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-            | PARA ABRE_PAR VAR OPER_RELA VAR PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-
-            | PARA ABRE_PAR VAR OPER_ATRIB_IGUAL INTEIRO PONTO_VIRG VAR OPER_RELA INTEIRO PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-            | PARA ABRE_PAR VAR OPER_RELA INTEIRO PONTO_VIRG VAR OPER_RELA VAR PONTO_VIRG VAR ITERADORES FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-    '''
+    '''codigo : PARA ABRE_PAR relacional PONTO_VIRG relacional PONTO_VIRG VAR ITERADORES FECHA_PAR expinterna'''
 
 
 def p_condicional(p):
-    '''codigo : SE ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+    '''codigo : SE ABRE_PAR relacional FECHA_PAR expinterna
+              | SE ABRE_PAR logico FECHA_PAR expinterna
 
-                   | SE ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
-                   | SE ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV SENAO ABRE_CHAV codigos FECHA_CHAV
+              | SE ABRE_PAR relacional FECHA_PAR expinterna SENAO expinterna
+              | SE ABRE_PAR logico FECHA_PAR expinterna SENAO expinterna
         '''
 
 
 def p_enquanto(p):
-    '''codigo : ENQUANTO ABRE_PAR VAR OPER_RELA VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | ENQUANTO ABRE_PAR VAR OPER_RELA INTEIRO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | ENQUANTO ABRE_PAR VAR OPER_RELA REAL FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | ENQUANTO ABRE_PAR VAR OPER_RELA BOOLEANO FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | ENQUANTO ABRE_PAR VAR OPER_RELA CADEIA_CAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+    '''codigo : ENQUANTO ABRE_PAR relacional FECHA_PAR expinterna
+              | ENQUANTO ABRE_PAR BOOLEANO FECHA_PAR expinterna
     '''
 
 def p_retorno(p):
@@ -154,21 +168,29 @@ def p_retorno(p):
               | RETORNO INTEIRO
     '''
 
-def p_definir_funk(p):
-    '''codigo : FUNK NOME_FUNK ABRE_PAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | FUNK NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | FUNK NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | FUNK NOME_FUNK ABRE_PAR VAR VAR VAR VAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
-              | FUNK NOME_FUNK ABRE_PAR FECHA_PAR ABRE_CHAV codigos FECHA_CHAV
+def p_parametro_vazio(p):
+    '''param_vazio : '''
+
+def p_parametro(p):
+    '''parametro : INTEIRO
+                 | REAL
+                 | CADEIA_CAR
+                 | VAR
     '''
 
-def p_chamar_funk(p):
-    '''codigo : NOME_FUNK ABRE_PAR VAR FECHA_PAR
-              | NOME_FUNK ABRE_PAR VAR VAR FECHA_PAR
-              | NOME_FUNK ABRE_PAR VAR VAR VAR FECHA_PAR
-              | NOME_FUNK ABRE_PAR VAR VAR VAR VAR FECHA_PAR
-              | NOME_FUNK ABRE_PAR FECHA_PAR
+def p_parametro_grupo(p):
+    '''parametro : parametro VIRG parametro'''
+
+def p_regra_funk(p):
+    '''regrafunk : ABRE_PAR param_vazio FECHA_PAR
+                  | ABRE_PAR parametro FECHA_PAR
     '''
+
+def p_definir_funk(p):
+    '''codigo : FUNK NOME_FUNK regrafunk expinterna'''
+
+def p_chamar_funk(p):
+    '''codigo : NOME_FUNK regrafunk'''
 
 def p_escreva(p):
   '''codigo : ESCREVA ABRE_PAR CADEIA_CAR FECHA_PAR
